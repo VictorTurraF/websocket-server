@@ -1,7 +1,9 @@
 import { io } from "./http";
+import { MessageService } from "./services/messages_service";
 import { RoomService } from "./services/room_service";
 
 const roomService = new RoomService();
+const messagesService = new MessageService();
 
 io.on("connection", (socket) => {
   console.log("socket connected: ", socket.id);
@@ -27,4 +29,17 @@ io.on("connection", (socket) => {
       });
     }
   });
+
+  socket.on("send_message", data => {
+    const message = {
+      room_name: data.room_name,
+      author_nickname: data.author_nickname,
+      description: data.description,
+      created_at: new Date()
+    }
+
+    messagesService.create(message)
+
+    io.to(data.room_name).emit("send_message", message )
+  })
 });
