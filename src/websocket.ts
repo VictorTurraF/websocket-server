@@ -46,8 +46,8 @@ io.on("connection", (socket) => {
       created_at: new Date(),
     };
 
-    messagesService.create(message);
+    const savedMessage = messagesService.create(message);
 
-    io.to(data.room_name).emit("message", message);
+    io.to(data.room_name).emit("message", savedMessage);
   });
 });
