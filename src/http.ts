@@ -3,8 +3,11 @@ import http from "http";
 import { Server } from "socket.io";
 import { UserService } from "./services/users_service";
 import jwt from "jsonwebtoken";
+import { ensureAuthentication } from "./middlewares/auth";
+import { RoomService } from "./services/room_service";
 
 const userService = new UserService();
+const roomService = new RoomService();
 
 const app = express();
 
@@ -20,7 +23,9 @@ app.get("/", (req, res) =>
   res.status(200).json({ hello: "Server is up time" })
 );
 
-app.post("/auth", async (req, res) => {
+
+
+app.post("/api/auth", async (req, res) => {
   const { username, password } = req.body;
 
   const foundUser = userService.findByNickName(username);
@@ -38,6 +43,15 @@ app.post("/auth", async (req, res) => {
   });
 
   return res.status(200).json({ token, user: foundUser });
+});
+
+app.get("/api/rooms", ensureAuthentication, (req, res) => {
+  // @ts-ignore
+  const { user_id } = req;
+
+  const rooms = roomService.findByUserId(Number(user_id))
+
+  return res.status(200).send(rooms)
 });
 
 const httpServer = http.createServer(app);
