@@ -8,7 +8,7 @@ const messagesService = new MessageService();
 io.on("connection", (socket) => {
   console.log("socket connected: ", socket.id);
 
-  socket.on("select_room", (data) => {
+  socket.on("select_room", (data, callback) => {
     const room_name = `${data.user.nickname}_${data.contact.nickname}`;
     socket.join(room_name);
 
@@ -28,18 +28,25 @@ io.on("connection", (socket) => {
         socket_id: socket.id,
       });
     }
+
+    const messages = messagesService.findByRoomName(room_name)
+
+    console.log("messages from room", messages)
+
+    callback({ messages, room_name })
   });
 
-  socket.on("send_message", data => {
+  socket.on("message", (data) => {
     const message = {
       room_name: data.room_name,
       author_nickname: data.author_nickname,
+      author_name: data.autor_name,
       description: data.description,
-      created_at: new Date()
-    }
+      created_at: new Date(),
+    };
 
-    messagesService.create(message)
+    messagesService.create(message);
 
-    io.to(data.room_name).emit("send_message", message )
-  })
+    io.to(data.room_name).emit("message", message);
+  });
 });
