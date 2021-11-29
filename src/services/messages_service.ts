@@ -15,6 +15,10 @@ export class MessageService {
     return newMessage;
   }
 
+  findByRoomName (room_name: string) {
+    return this.messages.filter(message => message.room_name === room_name)
+  }
+
   private getNextId() {
     return this.messages.length + 1;
   }
