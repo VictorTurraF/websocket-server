@@ -1,13 +1,11 @@
 import express from "express";
 import http from "http";
-import { Server } from "socket.io";
-import { UserService } from "./services/users_service";
 import jwt from "jsonwebtoken";
+import { Server } from "socket.io";
 import { ensureAuthentication } from "./middlewares/auth";
-import { RoomService } from "./services/room_service";
 
-const userService = new UserService();
-const roomService = new RoomService();
+import { userService } from "./services/users_service";
+import { roomService } from "./services/room_service";
 
 const app = express();
 
@@ -22,8 +20,6 @@ app.use(function (req, res, next) {
 app.get("/", (req, res) =>
   res.status(200).json({ hello: "Server is up time" })
 );
-
-
 
 app.post("/api/auth", async (req, res) => {
   const { username, password } = req.body;

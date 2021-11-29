@@ -9,7 +9,7 @@ io.on("connection", (socket) => {
   console.log("socket connected: ", socket.id);
 
   socket.on("select_room", (data, callback) => {
-    const room_name = `${data.user.nickname}_${data.contact.nickname}`;
+    const { room_name } = data
     socket.join(room_name);
 
     const userInRoom = roomService.findWhere({
@@ -31,12 +31,13 @@ io.on("connection", (socket) => {
 
     const messages = messagesService.findByRoomName(room_name)
 
-    console.log("messages from room", messages)
+    console.log(messages)
 
     callback({ messages, room_name })
   });
 
   socket.on("message", (data) => {
+    console.log(data)
     const message = {
       room_name: data.room_name,
       author_nickname: data.author_nickname,
