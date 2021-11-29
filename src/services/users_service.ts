@@ -21,9 +21,9 @@ export class UserService {
     },
     {
       id: 3,
-      full_name: "Jhon Doe",
-      nickname: "JDOE",
-      password: 'jd123'
+      full_name: "Gabriel Florencio",
+      nickname: "GABf",
+      password: 'gab123'
     },
   ];
 
@@ -38,4 +38,20 @@ export class UserService {
   public findByNickName (nickname: string) {
     return this.users.find(user => user.nickname === nickname)
   }
+
+  public findById (id: number) {
+    const user = this.users.find(user => user.id === id)
+
+    if (!user) {
+      return user
+    }
+
+    return {
+      id: user.id,
+      full_name: user.full_name,
+      nickname: user.nickname,
+    }
+  }
 }
+
+export const userService = new UserService()

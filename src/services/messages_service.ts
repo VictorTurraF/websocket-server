@@ -23,3 +23,5 @@ export class MessageService {
     return this.messages.length + 1;
   }
 }
+
+export const messageService = new MessageService()
